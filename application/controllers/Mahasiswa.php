@@ -4,10 +4,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH."libraries/Server.php";
 class Mahasiswa extends Server {
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model("Mmahasiswa", "model", TRUE);
+    }
+
     function service_get(){
-        $token = $this->get('npm');
-        $this->load->model("Mmahasiswa", "mdl", TRUE);        
-        $this->response(array("mahasiswa" => $this->mdl->get_data(base64_encode($token))), 200);
+        $token = $this->get('npm_mhs');
+                
+        $this->response(array("mahasiswa" => $this->model->get_data(base64_encode($token))), 200);
     }
 
     function service_post(){
@@ -19,8 +25,8 @@ class Mahasiswa extends Server {
             'jurusan'      => $this->post('jurusan_mhs')
         );
         
-        $this->load->model("Mmahasiswa", "mdl", TRUE);
-        $save_data = $this->mdl->post_data($data);
+        
+        $save_data = $this->model->post_data($data);
 
         if ($save_data["status"]) {
             $this->response(array("status" => "Success","mahasiswa"=> $save_data['payload']), 200);
@@ -31,23 +37,31 @@ class Mahasiswa extends Server {
 
     function service_put(){
 
-        $id = $this->put('id');
+        
         $data = array(
-            'npm'          => $this->put('npm'),
-            'nama'          => $this->put('nama'),
-            'telepon'      => $this->put('telepon'),
-            'jurusan'      => $this->put('jurusan')
+            'npm'          => $this->put('npm_mhs'),
+            'nama'          => $this->put('nama_mhs'),
+            'telepon'      => $this->put('telepon_mhs'),
+            'jurusan'      => $this->put('jurusan_mhs')
         );
 
-        $this->load->model("Mmahasiswa", "mdl", TRUE);        
-        $this->response(array("status" => $this->mdl->put_data($data, $id)), 200);
+        $token = $this->put('token');
+        
+
+        $update_data = $this->model->put_data($data, base64_encode($token));
+        if ($update_data["status"]) {
+            $this->response(array("status" => "Success","mahasiswa"=> $update_data['payload']), 200);
+        } else {
+            $this->response(array("status" => "Failed","mahasiswa"=> $update_data['payload']), 500);
+        }
+
     }
 
     function service_delete(){
         $token = $this->delete('npm_mhs');
-        $this->load->model("Mmahasiswa", "mdl", TRUE);
         
-        $delete = $this->mdl->delete_data(base64_encode($token));
+        
+        $delete = $this->model->delete_data(base64_encode($token));
         if ($delete == 1) {
             $this->response(array("status" => "Success","npm_mhs"=> $token), 200);
         } else {
