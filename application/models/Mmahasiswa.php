@@ -21,7 +21,7 @@ class Mmahasiswa extends CI_Model {
 
         if (count($query)==0) {
             $this->db->insert('tb_mahasiswa', $data);
-            return array("status" => true,"payload"=> $this->mdl->get_data($npm));
+            return array("status" => true,"payload"=> $this->model->get_data($npm));
         } else {
             return array("status" => false,"payload"=> null);
         }
@@ -41,7 +41,7 @@ class Mmahasiswa extends CI_Model {
             $this->db->where("TO_BASE64(npm) = '$token'");
             $this->db->update('tb_mahasiswa', $data);
             $newToken = base64_encode($npm);
-            return array("status" => true,"payload"=> $this->mdl->get_data($newToken));
+            return array("status" => true,"payload"=> $this->model->get_data($newToken));
         } else {
             return array("status" => false,"payload"=> null);
         }
@@ -49,7 +49,7 @@ class Mmahasiswa extends CI_Model {
         // if (count($query)==1) {
         //     $this->db->where("TO_BASE64(npm) = '$token'");
         //     $this->db->update('tb_mahasiswa', $data);
-        //     return array("status" => true,"payload"=> $this->mdl->get_data($token));
+        //     return array("status" => true,"payload"=> $this->model->get_data($token));
         // } else {
         //     return array("status" => false,"payload"=> null);
         // }
